@@ -109,6 +109,9 @@ def seed_users(conn: psycopg2.extensions.connection, count: int = 50) -> None:
 
     try:
         print(f"Seeding {count} users...")
+        
+        # Clear unique cache to avoid exhausting unique values
+        fake.unique.clear()
 
         for _ in range(count):
             cursor.execute(
@@ -166,7 +169,7 @@ def seed_products(conn: psycopg2.extensions.connection, count: int = 100) -> Non
                 (
                     fake.catch_phrase(),
                     fake.text(max_nb_chars=200),
-                    round(fake.random.uniform(5.0, 999.99), 2),
+                    fake.pydecimal(left_digits=3, right_digits=2, positive=True, min_value=5, max_value=999),
                     fake.random_element(categories),
                 ),
             )
