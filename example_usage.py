@@ -15,11 +15,11 @@ def example_connection_test():
     print("=" * 60)
     
     db = DatabaseConnection()
-    print(f"\nConnection parameters:")
+    print(f"\nAttempting to connect to database...")
     print(f"  Host: {db.db_host}")
     print(f"  Port: {db.db_port}")
     print(f"  Database: {db.db_name}")
-    print(f"  User: {db.db_user}")
+    # Note: User and password are not displayed for security reasons
     print()
     
     # Test the connection

@@ -37,6 +37,8 @@ def reset_tables():
         tables = ['User', 'State', 'Product', 'ProductSale']
         
         # Truncate tables with CASCADE to handle foreign key constraints
+        # Note: TRUNCATE is a DDL statement that auto-commits in PostgreSQL
+        success_count = 0
         for table in tables:
             try:
                 print(f"Resetting table: {table}")
@@ -48,17 +50,16 @@ def reset_tables():
                     sql.Identifier(table)
                 )
                 cursor.execute(query)
+                conn.commit()  # Commit each table individually
+                success_count += 1
                 print(f"✓ Table {table} reset successfully")
             except Exception as e:
                 print(f"✗ Error resetting table {table}: {e}")
                 # Continue with other tables even if one fails
                 conn.rollback()
-                cursor = conn.cursor()  # Get a new cursor after rollback
                 continue
         
-        # Commit the changes
-        conn.commit()
-        print("\nDatabase reset completed successfully!")
+        print(f"\nDatabase reset completed! {success_count}/{len(tables)} tables reset successfully.")
         
         cursor.close()
         conn.close()
