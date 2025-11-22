@@ -9,6 +9,7 @@ This script resets the following tables at the beginning of each run:
 """
 
 import sys
+from psycopg2 import sql
 from db_connection import DatabaseConnection
 
 
@@ -42,7 +43,11 @@ def reset_tables():
                 # TRUNCATE removes all rows and resets sequences
                 # CASCADE automatically truncates dependent tables
                 # RESTART IDENTITY resets auto-increment sequences
-                cursor.execute(f'TRUNCATE TABLE "{table}" RESTART IDENTITY CASCADE;')
+                # Using sql.Identifier to safely handle table names
+                query = sql.SQL('TRUNCATE TABLE {} RESTART IDENTITY CASCADE;').format(
+                    sql.Identifier(table)
+                )
+                cursor.execute(query)
                 print(f"✓ Table {table} reset successfully")
             except Exception as e:
                 print(f"✗ Error resetting table {table}: {e}")

@@ -7,8 +7,6 @@ using environment variables for configuration.
 
 import os
 import psycopg2
-from psycopg2 import pool
-from typing import Optional
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -25,7 +23,6 @@ class DatabaseConnection:
         self.db_name = os.getenv('DB_NAME', 'postgres')
         self.db_user = os.getenv('DB_USER', 'postgres')
         self.db_password = os.getenv('DB_PASSWORD', '')
-        self.connection_pool: Optional[psycopg2.pool.SimpleConnectionPool] = None
     
     def get_connection(self):
         """
