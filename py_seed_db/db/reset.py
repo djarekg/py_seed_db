@@ -9,8 +9,11 @@ This script resets the following tables at the beginning of each run:
 """
 
 import sys
+
 from psycopg2 import sql
-from db_connection import DatabaseConnection
+
+from .connection import DbConnection
+from .tables import tables
 
 
 def reset_tables():
@@ -25,16 +28,14 @@ def reset_tables():
     Returns:
         bool: True if reset is successful, False otherwise
     """
-    db = DatabaseConnection()
+    db = DbConnection()
+    conn = None
     
     try:
         conn = db.get_connection()
         cursor = conn.cursor()
         
         print("Starting database reset...")
-        
-        # List of tables to reset
-        tables = ['User', 'State', 'Product', 'ProductSale']
         
         # Truncate tables with CASCADE to handle foreign key constraints
         # Note: TRUNCATE is a DDL statement that auto-commits in PostgreSQL
@@ -67,7 +68,7 @@ def reset_tables():
         
     except Exception as e:
         print(f"\nError during database reset: {e}")
-        if 'conn' in locals():
+        if 'conn' in locals() and conn is not None:
             conn.close()
         return False
 
